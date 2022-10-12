@@ -1,4 +1,6 @@
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 import sqlalchemy as db
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
