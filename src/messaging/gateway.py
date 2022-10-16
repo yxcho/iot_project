@@ -23,7 +23,6 @@ import threading
 from src.models.light import Light
 from src.data import session
 
-
 # Configure logging
 logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s():%(lineno)i: %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S", level=logging.DEBUG)
@@ -42,6 +41,7 @@ MQTT_Port = 1883
 Keep_Alive_Interval = 45
 MQTT_Topic_Humidity = "Home/BedRoom/DHT22/Humidity"
 MQTT_Topic_Temperature = "Home/BedRoom/DHT22/Temperature"
+
 
 # ====================================================
 
@@ -161,14 +161,16 @@ def handle_serial_data(s: serial.Serial) -> None:
     # Publish data to MQTT broker
     logger.info(
         f"Publish | topic: {GATEWAY['name']}/sensors | payload: {payload}")
-#    mqttc.publish(topic=f"{GATEWAY['name']}/sensors", payload=payload, qos=0)
+    #    mqttc.publish(topic=f"{GATEWAY['name']}/sensors", payload=payload, qos=0)
     vals = payload.split("|")
     sensor_id = vals[0]
     sensor_type = vals[1]
-    val = vals[2]
+    val = float(vals[2])
+    print(payload)
     light_data = Light(sensor_id=sensor_id, value=val)
     session.add(light_data)
     session.commit()
+
 
 def main() -> None:
     global mqttc
@@ -176,7 +178,7 @@ def main() -> None:
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--device", type=str,
-                        help="serial device to use, e.g. /dev/ttyS1")
+                        help="serial device to use, e.g. /dev/ttyS5")
 
     args = parser.parse_args()
     args_device = args.device
@@ -227,7 +229,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
 
 # 1/1/1/
 # train_id/carriage_id/door_id/temperature/sensor_id
