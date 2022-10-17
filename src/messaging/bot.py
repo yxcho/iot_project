@@ -5,7 +5,7 @@ from sqlalchemy.sql import select
 from datetime import datetime
 
 token = os.getenv('TOKEN')
-bot = telebot.TeleBot('5734830398:AAGoAWzEuZ9YdSXaEda5tmz3MW2UT95hhkc')
+bot = telebot.TeleBot(token)
 
 
 @bot.message_handler(commands=['hi'])

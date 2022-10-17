@@ -20,3 +20,10 @@ def count_crowd(vals,connection,session,model):
     session.commit()
 
     return num
+
+
+def count_seat(vals,connection,session,model):
+    select = """select count(1),status from seat where train_line = 'red' and train_id = 1 and carriage_id = 2 group by status having status ='e';"""
+    num = connection.execute(select).fetchall()
+    
+    return num

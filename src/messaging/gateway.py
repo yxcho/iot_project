@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from nis import match
 import requests
 import serial
 import csv
@@ -21,7 +22,10 @@ import time
 import datetime
 import threading
 from src.models.light import Light
+import src.models as model
 from src.data import session
+from src.data import connection
+from src.data import data_operator
 
 # Configure logging
 logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s():%(lineno)i: %(message)s",
@@ -163,6 +167,13 @@ def handle_serial_data(s: serial.Serial) -> None:
         f"Publish | topic: {GATEWAY['name']}/sensors | payload: {payload}")
     #    mqttc.publish(topic=f"{GATEWAY['name']}/sensors", payload=payload, qos=0)
     vals = payload.split("|")
+
+    if vals[0] == 'crowd':
+        data_operator.count_crowd(vals,connection,session,model)
+
+    if vals[0] == 'seat':
+        data_operator.count_seat(vals,connection,session,model)
+
     sensor_id = vals[0]
     sensor_type = vals[1]
     val = float(vals[2])
