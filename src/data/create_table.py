@@ -29,57 +29,61 @@ from sqlalchemy import Table, Column, Integer, String, Float, MetaData, DateTime
 meta = MetaData()
 
 
-# light = Table(
-#     'light', meta, 
-#     Column('id', Integer, primary_key = True), 
-#     Column('sensor_id', Integer), 
-#     Column('timestamp', DateTime), 
-#     Column('value', Float)
-# )
-
-crowd = Table(
-    'crowd', meta, 
-    Column('train_line',String),
-    Column('train_id',Integer),
-    Column('carriage_id',Integer),
-    Column('density',Integer),
-    Column('timestamp',DateTime)
+sensors_data = Table(
+    'sensors_data', meta, 
+    Column('train_line',String, nullable=False),
+    Column('train_id',Integer, nullable=False),
+    Column('carriage_id',Integer, nullable=False),
+    Column('comfort_indicator',String, nullable=False),
+    Column('sensor_type',String, nullable=False),
+    Column('sensor_id',Integer, nullable=False),
+    Column('value',Float, nullable=False),
+    Column('timestamp',DateTime, nullable=False)
 )
 
-crowd_raw = Table(
-    'crowd_raw', meta, 
-    Column('train_line',String),
-    Column('train_id',Integer),
-    Column('carriage_id',Integer),
-    Column('sensor_id',String),
-    Column('value',Float),
-    Column('timestamp',DateTime)
-)
 
-seat = Table(
-    'seat', meta, 
-    Column('train_line',String),
-    Column('train_id',Integer),
-    Column('carriage_id',Integer),
-    Column('seat_id',Integer),
-    Column('status',String),
-    Column('timestamp',DateTime)
-)
 
-seat_raw = Table(
-    'seat_raw', meta, 
+
+processed_data = Table(
+    'processed_data', meta, 
     Column('train_line',String),
     Column('train_id',Integer),
     Column('carriage_id',Integer),
-    Column('sensor_id',Integer),
+    Column('comfort_indicator',String),
     Column('value',Float),
     Column('timestamp',DateTime)
 )
 
 
-meta.create_all(engine)
+
+train_capacity = Table(
+    'train_capacity', meta, 
+    Column('train_line',String, nullable=False),
+    Column('carriage_count',Integer, nullable=False),
+    Column('capacity',Integer, nullable=False),
+)
+
+class TrainCapacity(Base):
+    __tablename__ = "train_capacity"
+    train_line = Column(String, primary_key=True)
+    carriage_count = Column(Integer)
+    capacity = Column(Integer)
+
+
+def populate_capacity_table():
+    blue_line = TrainCapacity(train_line = "B", carriage_count = 3, capacity = 250)
+    green_line = TrainCapacity(train_line = "G", carriage_count = 6, capacity = 300)
+    red_line = TrainCapacity(train_line = "R", carriage_count = 6, capacity = 300)
+    yellow_line = TrainCapacity(train_line = "Y", carriage_count = 3, capacity = 250)
+    purple_line = TrainCapacity(train_line = "P", carriage_count = 5, capacity = 300)
+    simulation = TrainCapacity(train_line = "S", carriage_count = 1, capacity = 10)
+    lines = [blue_line, green_line, red_line, yellow_line, purple_line, simulation]
+    session = sessionmaker(bind=engine)()
+    session.add_all(lines)
+    session.commit()
+
 
 
 if __name__ == '__main__':
-    #create_tables()
-    ...
+    meta.create_all(engine)
+    populate_capacity_table()
