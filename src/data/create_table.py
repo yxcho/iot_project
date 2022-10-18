@@ -62,20 +62,51 @@ sensors_data = Table(
     Column('timestamp', DateTime)
 )
 
-# def populate_capacity_table():
-#     blue_line = TrainCapacity(train_line = "B", carriage_count = 3, capacity = 250)
-#     green_line = TrainCapacity(train_line = "G", carriage_count = 6, capacity = 300)
-#     red_line = TrainCapacity(train_line = "R", carriage_count = 6, capacity = 300)
-#     yellow_line = TrainCapacity(train_line = "Y", carriage_count = 3, capacity = 250)
-#     purple_line = TrainCapacity(train_line = "P", carriage_count = 5, capacity = 300)
-#     simulation = TrainCapacity(train_line = "S", carriage_count = 1, capacity = 10)
-#     lines = [blue_line, green_line, red_line, yellow_line, purple_line, simulation]
-#     session = sessionmaker(bind=engine)()
-#     session.add_all(lines)
-#     session.commit()
+
+class Carriage(Base):
+    __tablename__ = "carriage"
+    carriage_id = Column(Integer,primary_key=True)
+    train_id = Column(Integer)
+    no_seat = Column(Integer,server_default='10')
+    capacity = Column(Integer,server_default='40')
+
+
+class Train(Base):
+    __tablename__ = "train"
+    train_line = Column(String)
+    train_id = Column(Integer,primary_key=True)
+    no_carriage = Column(Integer)
+
+
+def populate_train():
+    blue_line = Train(train_line = "B", no_carriage = 3)
+    blue_line1 = Train(train_line = "B", no_carriage = 3)
+    red_line = Train(train_line = "R", no_carriage = 5)
+    red_line1 = Train(train_line = "R", no_carriage = 5)
+    green_line = Train(train_line = "G", no_carriage = 5)
+    green_line1 = Train(train_line = "G", no_carriage = 5)
+    
+
+    lines = [blue_line,blue_line1, green_line,green_line1, red_line,red_line1]
+    session = sessionmaker(bind=engine)()
+    session.add_all(lines)
+    session.commit()
+
+def populate_carriage():
+    x = [1,1,1,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6]
+    lines = []
+    
+    for id in x:
+        c = Carriage(train_id = id)
+        lines.append(c)
+
+    session = sessionmaker(bind=engine)()
+    session.add_all(lines)
+    session.commit()
 
 
 
 if __name__ == '__main__':
     meta.create_all(engine)
-    #populate_capacity_table()
+    populate_train()
+    populate_carriage()
