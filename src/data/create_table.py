@@ -29,51 +29,37 @@ from sqlalchemy import Table, Column, Integer, String, Float, MetaData, DateTime
 meta = MetaData()
 
 
-# light = Table(
-#     'light', meta, 
-#     Column('id', Integer, primary_key = True), 
-#     Column('sensor_id', Integer), 
-#     Column('timestamp', DateTime), 
-#     Column('value', Float)
-# )
-
-crowd = Table(
-    'crowd', meta, 
+train = Table(
+    'train', meta, 
     Column('train_line',String),
-    Column('train_id',Integer),
-    Column('carriage_id',Integer),
-    Column('density',Integer),
-    Column('timestamp',DateTime)
+    Column('train_id',Integer,primary_key=True),
+    Column('no_carriage',Integer)
 )
 
-crowd_raw = Table(
-    'crowd_raw', meta, 
-    Column('train_line',String),
+carriage = Table(
+    'carriage', meta, 
+    Column('carriage_id',Integer,primary_key=True),
     Column('train_id',Integer),
-    Column('carriage_id',Integer),
-    Column('sensor_id',String),
-    Column('value',Float),
-    Column('timestamp',DateTime)
+    Column('no_seat',Integer,server_default='10'),
+    Column('capacity',Integer,server_default='40')
 )
 
-seat = Table(
-    'seat', meta, 
-    Column('train_line',String),
-    Column('train_id',Integer),
+processed_data = Table(
+    'processed_data', meta, 
     Column('carriage_id',Integer),
-    Column('seat_id',Integer),
-    Column('status',String),
-    Column('timestamp',DateTime)
+    Column('comfort_indicator',String),
+    Column('value',Integer),
+    Column('timestamp', DateTime)
 )
 
-seat_raw = Table(
-    'seat_raw', meta, 
-    Column('train_line',String),
-    Column('train_id',Integer),
+sensors_data = Table(
+    'sensors_data', meta, 
     Column('carriage_id',Integer),
     Column('sensor_id',Integer),
+    Column('sensor_type',String),
+    Column('comfort_indicator',String),
     Column('value',Float),
-    Column('timestamp',DateTime)
+    Column('timestamp', DateTime)
 )
 
 
