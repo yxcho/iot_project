@@ -6,6 +6,7 @@ from sqlalchemy.sql import func
 
 class Sensors_data(Base):
     __tablename__ = "sensors_data"
+    id = Column(Integer,primary_key=True)
     carriage_id = Column(Integer)
     sensor_id = Column(Integer)
     sensor_type = Column(String)

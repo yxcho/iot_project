@@ -1,9 +1,12 @@
 import os
+from random import random
 from dotenv import load_dotenv
 load_dotenv()
 import sqlalchemy as db
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import func
+import random
 
 Base = declarative_base()
 
@@ -46,6 +49,7 @@ carriage = Table(
 
 processed_data = Table(
     'processed_data', meta, 
+    Column('id',Integer,primary_key=True),
     Column('carriage_id',Integer),
     Column('comfort_indicator',String),
     Column('value',Integer),
@@ -54,6 +58,7 @@ processed_data = Table(
 
 sensors_data = Table(
     'sensors_data', meta, 
+    Column('id',Integer,primary_key=True),
     Column('carriage_id',Integer),
     Column('sensor_id',Integer),
     Column('sensor_type',String),
@@ -76,6 +81,26 @@ class Train(Base):
     train_line = Column(String)
     train_id = Column(Integer,primary_key=True)
     no_carriage = Column(Integer)
+
+
+class Processed_data(Base):
+    __tablename__ = "processed_data"
+    id = Column(Integer,primary_key=True)
+    carriage_id = Column(Integer)
+    comfort_indicator = Column(String)
+    value = Column(Integer)
+    timestamp = Column(DateTime(timezone=True), default=func.clock_timestamp())
+
+
+class Sensors_data(Base):
+    __tablename__ = "sensors_data"
+    id = Column(Integer,primary_key=True)
+    carriage_id = Column(Integer)
+    sensor_id = Column(Integer)
+    sensor_type = Column(String)
+    comfort_indicator = Column(String)
+    value = Column(Float)
+    timestamp = Column(DateTime(timezone=True), default=func.clock_timestamp())
 
 
 def populate_train():
@@ -105,8 +130,22 @@ def populate_carriage():
     session.commit()
 
 
+# def populate_processed_data():
+#     lines = []
+    
+#     for id in range(1,27):
+#         v = Processed_data(carriage_id = id, comfort_indicator='seat',value = random.randint(0,20))
+#         lines.append(v)
+#         v1 = Processed_data(carriage_id = id, comfort_indicator='crowd',value = random.randint(0,40))
+#         lines.append(v1)
+
+#     session = sessionmaker(bind=engine)()
+#     session.add_all(lines)
+#     session.commit()
+
 
 if __name__ == '__main__':
     meta.create_all(engine)
     populate_train()
     populate_carriage()
+    # populate_processed_data()
