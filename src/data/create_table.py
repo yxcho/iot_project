@@ -40,8 +40,8 @@ carriage = Table(
     'carriage', meta, 
     Column('carriage_id',Integer,primary_key=True),
     Column('train_id',Integer),
-    Column('no_seat',Integer,server_default='10'),
-    Column('capacity',Integer,server_default='40')
+    Column('no_seat',Integer,server_default='50'),
+    Column('capacity',Integer,server_default='300')
 )
 
 processed_data = Table(
@@ -67,8 +67,8 @@ class Carriage(Base):
     __tablename__ = "carriage"
     carriage_id = Column(Integer,primary_key=True)
     train_id = Column(Integer)
-    no_seat = Column(Integer,server_default='10')
-    capacity = Column(Integer,server_default='40')
+    no_seat = Column(Integer,server_default='50')
+    capacity = Column(Integer,server_default='300')
 
 
 class Train(Base):
@@ -81,10 +81,10 @@ class Train(Base):
 def populate_train():
     blue_line = Train(train_line = "B", no_carriage = 3)
     blue_line1 = Train(train_line = "B", no_carriage = 3)
-    red_line = Train(train_line = "R", no_carriage = 5)
-    red_line1 = Train(train_line = "R", no_carriage = 5)
-    green_line = Train(train_line = "G", no_carriage = 5)
-    green_line1 = Train(train_line = "G", no_carriage = 5)
+    red_line = Train(train_line = "R", no_carriage = 6)
+    red_line1 = Train(train_line = "R", no_carriage = 6)
+    green_line = Train(train_line = "G", no_carriage = 6)
+    green_line1 = Train(train_line = "G", no_carriage = 6)
     
 
     lines = [blue_line,blue_line1, green_line,green_line1, red_line,red_line1]

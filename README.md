@@ -2,6 +2,7 @@
 iot_project
 ===========
 
+Install Git, Python, Postgresql, Dbeaver, WSL1 (for Windows)
 
 .. image:: https://img.shields.io/pypi/v/iot_project.svg
         :target: https://pypi.python.org/pypi/iot_project
