@@ -6,6 +6,8 @@ import sqlalchemy as db
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, DateTime
+from sqlalchemy.sql import func
+
 meta = MetaData()
 
 

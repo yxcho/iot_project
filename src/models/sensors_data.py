@@ -1,8 +1,8 @@
 
-from email.policy import default
 from src.data import Base
 from sqlalchemy import Column, Integer, String, Time, Float, DateTime
 from sqlalchemy.sql import func
+
 
 class Sensors_data(Base):
     __tablename__ = "sensors_data"
