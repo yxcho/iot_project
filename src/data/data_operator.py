@@ -1,29 +1,87 @@
-def count_crowd(vals,connection,session,model):
-    select = """select density from crowd where train_line = 'red' and train_id = 1 and carriage_id = 1 order by timestamp desc limit 1;"""
-    num = connection.execute(select).fetchall()
-    num += int(vals[1])
-    s1 = float(vals[2])
-    s2 = float(vals[3])
-    s3 = float(vals[4])
-    s4 = float(vals[5])
-    
-    crowd_data = model.crowd.Crowd(train_line='red', train_id=1,carriage_id=1,density=num)
-    crowd_raw_data1 = model.crowd_raw.Crowd_raw(train_line='red', train_id=1,carriage_id=1,sensor_id='s1',value=s1)
-    crowd_raw_data2 = model.crowd_raw.Crowd_raw(train_line='red', train_id=1,carriage_id=1,sensor_id='s2',value=s2)
-    crowd_raw_data3 = model.crowd_raw.Crowd_raw(train_line='red', train_id=1,carriage_id=1,sensor_id='s3',value=s3)
-    crowd_raw_data4 = model.crowd_raw.Crowd_raw(train_line='red', train_id=1,carriage_id=1,sensor_id='s4',value=s4)
-    session.add(crowd_data)
-    session.add(crowd_raw_data1)
-    session.add(crowd_raw_data2)
-    session.add(crowd_raw_data3)
-    session.add(crowd_raw_data4)
+from src.models.sensors_data import Sensors_data
+from src.models.processed_data import Processed_data
+
+sa1 = 0
+sa2 = 0
+
+
+#identifier|sensor_type|sensor_id|processed_data|raw_data
+def add_record(vals,session):
+    sid = vals[1]+vals[2]
+    if vals[3] == 'Y':
+        v = 1
+    elif vals[3] == 'N':
+        v = 0
+    else:
+        v = vals[3]
+    data = Sensors_data(carriage_id=1, sensor_id=sid, sensor_type=vals[1], comfort_indicator=vals[0], value=v)
+    session.add(data)
     session.commit()
+    #print('sensors_data updated')
 
-    return num
+#CD|ULT|0|±X
+def count_crowd(vals,connection,session):
+    selectNum = """select value from processed_data pd  where carriage_id  = 1 and comfort_indicator = 'crowd' order by timestamp desc limit 1;"""
+    exNum = connection.execute(selectNum).fetchall()[0][0]
+    if exNum < 0:
+        exNum = 0
+   # print('exNum='+str(exNum))
+
+    newNum = exNum + int(vals[3])
+    print('newNum='+str(exNum))
+    data = Processed_data(carriage_id=1, comfort_indicator='crowd', value=newNum)
+    session.add(data)
+    session.commit()
+    print('crowd updated')
 
 
-def count_seat(vals,connection,session,model):
-    select = """select count(1),status from seat where train_line = 'red' and train_id = 1 and carriage_id = 2 group by status having status ='e';"""
-    num = connection.execute(select).fetchall()
+
+#SA|ULT|2|PP|RR
+def count_seat(vals,connection,session):
+    global sa1
+    global sa2
+
+    sid = vals[1]+vals[2]
+
+    selectNum = """select value from processed_data pd  where carriage_id  = 1 and comfort_indicator = 'seat' order by timestamp desc limit 1;"""
+    exNum = connection.execute(selectNum).fetchall()[0][0]
+    print('exNum='+str(exNum))
+    #the latest record
+    selectPP = """select value from sensors_data sd where carriage_id  = 1 and sensor_id = '{}' order by timestamp desc limit 1;""".format(sid)
+    exPP = connection.execute(selectPP).fetchall()[0][0]
+    if exPP == 1:
+        exPP = 'Y'
+    elif exPP == 0:
+        exPP = 'N'
+    print('exPP='+str(exPP))
+    # print('val='+str(vals[3]))
+    # print('sa1='+str(sa1))
+    # print('sa2='+str(sa2))
+
+    if exPP == vals[3]: # sensor reading is stable now
+        if vals[3] == 'Y':
+            if vals[2] == '1':
+                sa1 = 1
+            elif vals[2] == '2':
+                sa2 = 1
+        elif vals[3] == 'N':
+            if vals[2] == '1':
+                sa1 = 0
+            elif vals[2] == '2':
+                sa2 = 0
     
-    return num
+    sum = sa1 + sa2 +3
+
+    if sum != exNum:
+        data = Processed_data(carriage_id=1, comfort_indicator='seat', value=sum)
+        session.add(data)
+        session.commit()
+        print('seat updated')
+
+#TP|TEM|0|PP|RR
+def update_temp(vals,session):
+    data = Processed_data(carriage_id=1, comfort_indicator='temp', value=vals[3])
+    session.add(data)
+    session.commit()
+    print('temp updated')
+    print('temp='+str(vals[3]))

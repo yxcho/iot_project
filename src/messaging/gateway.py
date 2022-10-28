@@ -21,7 +21,7 @@ import sched
 import time
 import datetime
 import threading
-from src.models.light import Light
+#from src.models.light import Light
 import src.models as model
 from src.data import session
 from src.data import connection
@@ -167,20 +167,22 @@ def handle_serial_data(s: serial.Serial) -> None:
         f"Publish | topic: {GATEWAY['name']}/sensors | payload: {payload}")
     #    mqttc.publish(topic=f"{GATEWAY['name']}/sensors", payload=payload, qos=0)
     vals = payload.split("|")
+    # update sensor reading data
+    if vals[0] != 'CDr':
+        data_operator.add_record(vals,session)
 
-    if vals[0] == 'crowd':
-        data_operator.count_crowd(vals,connection,session,model)
+    if vals[0] == 'CD':
+        print(vals)
+        data_operator.count_crowd(vals,connection,session)
 
-    if vals[0] == 'seat':
-        data_operator.count_seat(vals,connection,session,model)
+    if vals[0] == 'SA':
+        data_operator.count_seat(vals,connection,session)
 
-    sensor_id = vals[0]
-    sensor_type = vals[1]
-    val = float(vals[2])
+    if vals[0] == 'TP':
+        data_operator.update_temp(vals,session)
+
     print(payload)
-    light_data = Light(sensor_id=sensor_id, value=val)
-    session.add(light_data)
-    session.commit()
+
 
 
 def main() -> None:
@@ -202,17 +204,17 @@ def main() -> None:
     mqttc.on_message = handle_mqtt_message
 
     # Connect to broker
-    mqttc.is_connected = False
-    mqttc.connect("broker.mqttdashboard.com")
-    mqttc.loop_start()
-    time_to_wait_secs = 1
-    while not mqttc.is_connected and time_to_wait_secs > 0:
-        time.sleep(0.1)
-        time_to_wait_secs -= 0.1
+    # mqttc.is_connected = False
+    # mqttc.connect("broker.mqttdashboard.com")
+    # mqttc.loop_start()
+    # time_to_wait_secs = 1
+    # while not mqttc.is_connected and time_to_wait_secs > 0:
+    #     time.sleep(0.1)
+    #     time_to_wait_secs -= 0.1
 
-    if time_to_wait_secs <= 0:
-        logger.error(f"Can't connect to broker.mqttdashboard.com")
-        return
+    # if time_to_wait_secs <= 0:
+    #     logger.error(f"Can't connect to broker.mqttdashboard.com")
+    #     return
 
     # Try to get the serial device name
     if args.device:
