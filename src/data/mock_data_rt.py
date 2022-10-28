@@ -42,7 +42,7 @@ def generate_real_time_data():
         elif indicator == "temperature":
             seed_val = utils.get_seed_value_from_time(daily_temp_seeder, curr_time_in_s)
             random_val = mock_data_historical.generate_random_temp(current_time.timestamp(), seed_val)
-            new_data = Processed_data(carriage_id=1, comfort_indicator=indicator, value=random_val, timestamp=utils.convert_epoch_to_datetime(current_time.timestamp()))
+            new_data = Processed_data(carriage_id=1, comfort_indicator=indicator, value=int(random_val), timestamp=utils.convert_epoch_to_datetime(current_time.timestamp()))
             session.add(new_data)
             session.flush()
             session.commit()

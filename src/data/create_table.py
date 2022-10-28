@@ -6,6 +6,7 @@ import sqlalchemy as db
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, DateTime
+from sqlalchemy.sql import func
 meta = MetaData()
 
 
@@ -56,7 +57,7 @@ processed_data = Table(
     # Column('id', Integer, primary_key=True, autoincrement=True),
     Column('carriage_id',Integer),
     Column('comfort_indicator',String),
-    Column('value',Float),
+    Column('value',Integer),
     Column('timestamp', DateTime)
 )
 

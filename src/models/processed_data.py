@@ -8,5 +8,5 @@ class Processed_data(Base):
     id = Column(Integer, primary_key=True) #, autoincrement=True)
     carriage_id = Column("carriage_id", Integer)
     comfort_indicator = Column("comfort_indicator", String)
-    value = Column("value", Float)
+    value = Column("value", Integer)
     timestamp = Column("timestamp", DateTime(timezone=True), default=func.clock_timestamp())

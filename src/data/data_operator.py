@@ -55,8 +55,8 @@ def count_seat(vals,connection,session):
         exPP = 'N'
     print('exPP='+str(exPP))
     # print('val='+str(vals[3]))
-    # print('sa1='+str(sa1))
-    # print('sa2='+str(sa2))
+    print('sa1='+str(sa1))
+    print('sa2='+str(sa2))
 
     if exPP == vals[3]: # sensor reading is stable now
         if vals[3] == 'Y':
@@ -70,7 +70,7 @@ def count_seat(vals,connection,session):
             elif vals[2] == '2':
                 sa2 = 0
     
-    sum = sa1 + sa2 +3
+    sum =20 -sa1 - sa2
 
     if sum != exNum:
         data = Processed_data(carriage_id=1, comfort_indicator='seat', value=sum)

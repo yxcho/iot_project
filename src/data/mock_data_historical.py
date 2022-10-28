@@ -109,7 +109,7 @@ def generate_random_temp_values_daily(seed_df, times_in_s, epoch_day: int):
     for time_in_s in times_in_s:
         seed_val = utils.get_seed_value_from_time(seed_df, time_in_s)
         random_val = generate_random_temp(epoch_day, seed_val)
-        random_vals.append(random_val)
+        random_vals.append(int(random_val))
     return random_vals
 
 
@@ -132,7 +132,7 @@ def generate_historical_temp_all_carriages(daily_temp_seeder):
     for carriage in CARRIAGE_IDS:
         carriage_df = generate_historical_temp_data(daily_temp_seeder, carriage)
         
-        carriage_df["value"] = carriage_df["value"] * random.uniform(0.95, 1.0) if carriage in [1, 4] else carriage_df["value"]
+        # carriage_df["value"] = carriage_df["value"] * random.uniform(0.95, 1.0) if carriage in [1, 4] else carriage_df["value"]
         all_carriages = pd.concat([all_carriages, carriage_df])
 
     all_carriages["value"] = all_carriages["value"].astype(float)
