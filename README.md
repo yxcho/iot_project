@@ -1,38 +1,30 @@
-===========
 iot_project
 ===========
 
-Install Git, Python, Postgresql, Dbeaver, WSL1 (for Windows)
 
-.. image:: https://img.shields.io/pypi/v/iot_project.svg
-        :target: https://pypi.python.org/pypi/iot_project
+Table of Contents
+------------
 
-.. image:: https://img.shields.io/travis/yxcho/iot_project.svg
-        :target: https://travis-ci.com/yxcho/iot_project
+| S/NO | Section |
+| --- | --- |
+| 1. | [About this Project](#1) | 
+| 2. | [Setup Environment](#2) | 
+| 3. | [Running the Program](#3) | 
 
-.. image:: https://readthedocs.org/projects/iot-project/badge/?version=latest
-        :target: https://iot-project.readthedocs.io/en/latest/?version=latest
-        :alt: Documentation Status
-
-
-
-
-Python Boilerplate contains all the boilerplate you need to create a Python package.
+About this Project <a name="1"></a>
+------------
+This project contains the code used for IS614 Internet of Things group project. The details of the project can be found on https://medium.com/@iotteamhexagon/project-trainspot-find-your-spot-on-the-train-99f06f9e93b.  
 
 
-* Free software: MIT license
-* Documentation: https://iot-project.readthedocs.io.
+Setup Environment <a name="4"></a>
+------------
+Prerequisites: Git, Postgresql, Python 3.8 and above, Dbeaver, WSL1 (for Windows users)  
+Keep the micro:bit dongle plugged in to your machine when this program is running.  
 
 
-Features
---------
+Running the Program <a name="3"></a>
+------------
+For Windows users, open the program in WSL1
+To create database tables, run `cd src/data` followed by `python create_table.py`
 
-* TODO
-
-Credits
--------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+To start the program and keep the gateway running, run `python main.py` for macOS or `python main.py /dev/ttyS5` for Windows 
